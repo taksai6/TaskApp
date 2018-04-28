@@ -71,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
         mDecideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                search();
-            }
+                    search();
+                }
+
         });
 
         // ListViewをタップしたときの処理
@@ -143,11 +144,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void search() {
         String searchquery = mSearchEdit.getText().toString();
-        RealmResults<Task> result2 = mRealm.where(Task.class).equalTo("category", searchquery).findAll();
-        mTaskRealmResults = result2;
+        if (searchquery.length() == 0) {
+            mTaskRealmResults = mRealm.where(Task.class).findAll();
+            mTaskRealmResults.sort("date", Sort.DESCENDING);
+        }else {
+            RealmResults<Task> result2 = mRealm.where(Task.class).equalTo("category", searchquery).findAll();
+            mTaskRealmResults = result2;
+        }
+            reloadListView();
+        }
 
-        reloadListView();
-    }
 
     private void all() {
         // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
